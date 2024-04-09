@@ -1,11 +1,14 @@
 package com.example.projets2m;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
 
+
+
 @SpringBootApplication
-public class ProjetS2MApplication  {
+public class ProjetS2MApplication {
 
 
 
@@ -13,6 +16,8 @@ public class ProjetS2MApplication  {
 
         SpringApplication.run(ProjetS2MApplication.class, args);
     }
+
+
 
 
 }

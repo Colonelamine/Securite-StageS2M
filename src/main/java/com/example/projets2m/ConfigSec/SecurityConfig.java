@@ -19,10 +19,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.CorsFilter;
+
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 
 @Configuration
 @EnableMethodSecurity
@@ -35,6 +41,17 @@ public class SecurityConfig {
 
     private AuthEntryPointJwt unauthorizedHandler;
 
+    @Bean
+    public PrivateKey privateKey(KeyPair keyPair) {
+        return keyPair.getPrivate();
+    }
+    @Bean
+    public KeyPair keyPair() throws NoSuchAlgorithmException {
+        // Générer une paire de clés RSA
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        keyPairGenerator.initialize(2048); // Taille de la clé RSA (2048 bits est recommandé pour la sécurité)
+        return keyPairGenerator.generateKeyPair();
+    }
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter();
@@ -67,7 +84,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").permitAll()
 
-                        .requestMatchers("/Acceuil").authenticated());
+                        .requestMatchers("/Acceuil").authenticated().requestMatchers("/myConfig").permitAll());
 
         http.authenticationProvider(authenticationProvider());
 
